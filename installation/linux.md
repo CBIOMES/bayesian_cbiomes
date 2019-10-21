@@ -4,7 +4,7 @@ Issue the following shell command to install jupyter notebooks
 ```
 pip3 install notebook
 ```
-
+If `pip3` is not installed, see instructions [below](#python-and-pystan). 
 
 # Stan installation instructions
 
