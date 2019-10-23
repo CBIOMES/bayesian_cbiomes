@@ -191,8 +191,8 @@ model {
 
 data = Dict("N" => 100, "y" => randn(100), "x" => randn(100))
 mod_compile = SampleModel("mod", mod, method=StanSample.Sample(save_warmup=true, num_warmup=1000, num_samples=1000, thin=1))
-fit = stan_sample(mod_compile, data=data);
-print(fit)
+stan_sample(mod_compile, data=data);
+println(read_summary(mod_compile));
 ````
 This should return you a table of estimated coefficients. 
 
