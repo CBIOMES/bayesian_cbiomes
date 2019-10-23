@@ -113,6 +113,7 @@ We will try to fit a simple linear regression to see if Stan is installed correc
 Open Python and issue:
 ````
 import numpy
+import pystan
 
 mod = """
 data {
