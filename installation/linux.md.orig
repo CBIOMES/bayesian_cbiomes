@@ -21,6 +21,7 @@ sudo apt install r-recommended build-essential
 ```
 For a more up to date version of R follow the instructions [here](https://linuxize.com/post/how-to-install-r-on-ubuntu-18-04/).
 
+<<<<<<< HEAD
 We will try to fit a simple linear regression to see if Stan is installed correctly. 
 Open R and issue:
 ````
@@ -50,7 +51,9 @@ print(fit)
 This should return you a table of estimated coefficients. 
 
 ## Linux
+=======
 ### R for general Linux
+>>>>>>> 3c295303273edce4282f1f49edd77c2e1e4bc38c
 
 Here are R installation instructions for [CentOS](https://linuxize.com/post/how-to-install-r-on-centos-7/) and [Debian](https://linuxize.com/post/how-to-install-r-on-debian-9/), general Linux instructions can be found [here](https://cran.r-project.org/doc/FAQ/R-FAQ.html#How-can-R-be-installed-_0028Unix_002dlike_0029). 
 
@@ -85,6 +88,7 @@ To install `pystan` (to run Stan), run the follwing shell command to install the
 pip3 install pystan
 ```
 
+<<<<<<< HEAD
 We will try to fit a simple linear regression to see if Stan is installed correctly. 
 Open Python and issue:
 ````
@@ -120,7 +124,9 @@ This should return you a table of estimated coefficients.
 
 
 # Julia
+=======
 ## Julia and JuliaStan
+>>>>>>> 3c295303273edce4282f1f49edd77c2e1e4bc38c
 
 ### Julia for Ubuntu (for more general Linux instructions, see below)
 
