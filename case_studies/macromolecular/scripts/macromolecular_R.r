@@ -2,8 +2,6 @@ library(rstan)
 library(lattice)
 options(mc.cores = parallel::detectCores())
 
-#############################################################
-
 mod_code <- "functions {
   real[] macro(real   t,           // time
                real[] x,           // state x[1]:CH  x[2]:PR, x[3]:Chl , x[4]:N
@@ -24,7 +22,7 @@ mod_code <- "functions {
     real r0      = theta[8]*(x[2]/x[1]);
     real Chl     = x[3]*x[2];
     real Rcell   = x[1]/x[2];
-    real excr    = (1/2)*theta[5]*(1-tanh(Rcell - theta[6]));
+    real excr    = (1/2)*theta[5]*(1+tanh(Rcell - theta[6]));
     
     real dCH    = x[2]*(theta[4] - excr);
     real dr     = (1/theta[7])*(r0-x[3]);
@@ -69,15 +67,9 @@ model {
   }
 }"
 
-#################################################################
-
 dat       <- read.csv('data/macromolecules.csv')
 
-#################################################################
-
 dat_flynn <- read.csv('data/flynn_macromolecules.csv')
-
-#################################################################
 
 dat[,2] <- dat[,2]*0.001                 #PR;
 dat[,3] <- dat[,3]*1000                  #Chl;
@@ -85,11 +77,7 @@ dat[,4] <- dat[,4]*0.001                 #C
 dat     <- merge(dat,dat_flynn[,c(1,4)]) #add environmental nitrogen to the data
 dat[,5] <- dat[,5]*0.08325909            #N
 
-#################################################################
-
 head(dat)
-
-#################################################################
 
 options(repr.plot.width=6, repr.plot.height=4)
 par(mfrow=c(2,2),mar=c(2,3,2,2),oma=c(2,2,2,2))
@@ -98,29 +86,17 @@ for(i in 2:5){
     mtext(side=2,colnames(dat)[i],line=2.5)
 }
 
-#################################################################
-
 data <- list(n    =nrow(dat),
              t_obs=dat[,1],
              y    =dat[,c(4,2,3,5)])
-			 
-#################################################################
 
 mod <- stan_model(model_code=mod_code)
 
-#################################################################
-
 mcmc <- sampling(mod,data=data,iter=2000,chains=4,open_progress=TRUE)
-
-#################################################################
 
 mcmc
 
-#################################################################
-
 post <- extract(mcmc)
-
-#################################################################
 
 plot_theta <- function(post,theta_names){   #theta_names has to be in the the same order 
 	for(i in 1:dim(post$theta)[2]){
@@ -150,34 +126,25 @@ plot_trace <- function(post,theta_names){
 		abline(h=mean(post$theta[,i]),lwd=2)
 		mtext(theta_names[i])
 	}
-}   
-
-################################################################
+}                           
 
 theta_names <- c('CNpro','KN','mu','CHsyn','m_ex','R_ex','tau','b')
 state_names <- c('CH','PR','Chl','N')
 
-################################################################
-
+options(repr.plot.width=6, repr.plot.height=6)
 par(mfrow=c(4,2),mar=c(2,2,2,2),oma=c(2,2,2,2))
 	plot_theta(post=post,theta_names=theta_names)
-	
-################################################################
 
+options(repr.plot.width=6, repr.plot.height=6)
 par(mfrow=c(4,2),mar=c(2,2,2,2),oma=c(2,2,2,2))
 	plot_trace(post=post,theta_names=theta_names)
-	
-################################################################
 
+options(repr.plot.width=6, repr.plot.height=4)
 par(mfrow=c(2,2),oma=c(2,2,2,2),mar=c(2,2,2,2))
 	plot_CV(post=post,state_names=state_names)
-	
-################################################################
 
-plot_state(post=post,state_names=state_names)
+par(mfrow=c(2,2),mar=c(2,2,2,2),mar=c(2,2,2,2))
+	plot_state(post=post,state_names=state_names)
 
-################################################################
-
+options(repr.plot.width=6, repr.plot.height=6)
 pairs(post$theta[sample(1:nrow(post$theta),size=500),],pch=16,cex=0.5,labels=theta_names)
-
-

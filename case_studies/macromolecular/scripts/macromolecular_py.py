@@ -1,8 +1,33 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# ## Macromolecular model
+# 
+# This case study follows from the model presented in:
+# 
+# *Omta et al. 2017. Extracting physiological traits from batch and chemostate culture data. L&O*
+# 
+# The equations are below.
+
+# \begin{equation} \frac{dC}{dt} = (C_{syn} - E)P \end{equation}
+# \begin{equation} \frac{dP}{dt} = P_{syn}P \end{equation}
+# \begin{equation} \frac{dr}{dt} = \frac{1}{\tau}(r_0 - r) \end{equation}
+# \begin{equation} \frac{dN}{dt} = -\frac{dP}{dt} \end{equation}
+# 
+# \begin{equation} P_{syn} = \mu\left(\frac{N}{N+K}\right) \end{equation}
+# \begin{equation} r_0 = b\frac{P}{C} \end{equation}
+# \begin{equation} r_{cell} = \frac{C}{P} \end{equation}
+# \begin{equation} E = \frac{1}{2}m_{ex}\left(1+\tanh\left(r_{cell} - r_{ex}\right)\right) \end{equation}
+
+# In[1]:
+
 
 import numpy as np
 import pystan
 
-########################################################################
+
+# In[2]:
+
 
 mod_code = '''functions {
   real[] macro(real   t,           // time
@@ -70,7 +95,9 @@ model {
 }
 '''
 
-#########################################################################
+
+# In[3]:
+
 
 import pandas # heavy CSV file usage ahead
 
@@ -88,7 +115,9 @@ dat = dat.rename(columns={'N':'PR','ammonium':'N','C':'CH'})
 
 dat.head()
 
-########################################################################
+
+# In[4]:
+
 
 import matplotlib.pyplot as plt
 
@@ -96,27 +125,37 @@ fig, axs = plt.subplots(nrows=2, ncols=2, sharex=True, figsize=(12,9))
 for ax,key in zip(axs.flat, dat.keys()[1:]):
     ax.scatter(dat['t'], dat[key])
     ax.set(ylabel=key)
-	
-########################################################################
+
+
+# In[5]:
+
 
 data = {'n':len(dat), 't_obs':dat['t'], 'y':dat.loc[:,('CH','PR','chl','N')]}
 
-########################################################################
+
+# In[6]:
+
 
 mod = pystan.StanModel(model_code=mod_code)
 
-########################################################################
+
+# In[7]:
+
 
 mcmc = mod.sampling(data=data, iter=2000, chains=4)
 print(mcmc)
 
-########################################################################
+
+# In[8]:
+
 
 theta_names = ('CNpro','KN','mu','CHsyn','m_ex','R_ex','tau','b')
 state_names = ('CH','PR','chl','N')
 #name_mapping = {'CH':'x[1]', 'PR':'x[2]', 'chl':'x[3]', 'N':'x[4]'}
 
-########################################################################
+
+# In[9]:
+
 
 print(mcmc['theta'].shape)
 
@@ -125,24 +164,20 @@ for iax,ax in enumerate(axs.flat):
     ax.hist(mcmc['theta'][:,iax])
     ax.axvline(np.mean(mcmc['theta'][:,iax]), color='black')
     ax.set_title(theta_names[iax])
-	
-########################################################################
+
+
+# In[10]:
+
 
 fig, axs = plt.subplots(nrows=4, ncols=2, sharex=True, figsize=(12,10))
 for iax,ax in enumerate(axs.flat):
     ax.plot(mcmc['theta'][:,iax], marker='.', linestyle='none')
     ax.axhline(np.mean(mcmc['theta'][:,iax]), color='black')
     ax.set_title(theta_names[iax])
-	
-########################################################################
 
-fig, axs = plt.subplots(nrows=4, ncols=2, sharex=True, figsize=(12,10))
-for iax,ax in enumerate(axs.flat):
-    ax.plot(mcmc['theta'][:,iax], marker='.', linestyle='none')
-    ax.axhline(np.mean(mcmc['theta'][:,iax]), color='black')
-    ax.set_title(theta_names[iax])
 
-########################################################################
+# In[11]:
+
 
 fig, axs = plt.subplots(nrows=2, ncols=2, figsize=(12,10))
 for iax,ax in enumerate(axs.flat):
@@ -151,7 +186,9 @@ for iax,ax in enumerate(axs.flat):
 fig.suptitle('$\sigma_x/\mu_x$', size=16)
 None
 
-########################################################################
+
+# In[12]:
+
 
 fig, axs = plt.subplots(nrows=2, ncols=2, figsize=(12,10))
 for iax,ax in enumerate(axs.flat):
@@ -164,7 +201,9 @@ for iax,ax in enumerate(axs.flat):
     
     ax.set_title(name)
 
-########################################################################	
+
+# In[13]:
+
 
 num_params = len(theta_names)
 cmap = plt.get_cmap('gray_r')
@@ -183,5 +222,10 @@ for irow in range(1,num_params):
             ax.set_ylabel(yname)
         if irow == num_params-1:
             ax.set_xlabel(xname)
-			
+
+
+# In[ ]:
+
+
+
 

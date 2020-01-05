@@ -1,7 +1,6 @@
 using NetCDF, StanSample, PyPlot, Statistics, PyCall, Interpolations
 
-###############################################################################
-
+### load data
 data_seaflow = Dict("time" => ncread("data/SeaFlow_SizeDist_regrid-15-5.nc","time",start=[1],count=[-1]),
                     "size_bounds" => ncread("data/SeaFlow_SizeDist_regrid-15-5.nc","size_bounds",start=[1],count=[-1]),
                     "w_obs" => ncread("data/SeaFlow_SizeDist_regrid-15-5.nc","w_obs",start=[1,1],count=[-1,-1]),
@@ -9,14 +8,10 @@ data_seaflow = Dict("time" => ncread("data/SeaFlow_SizeDist_regrid-15-5.nc","tim
                     "m" => ncread("data/SeaFlow_SizeDist_regrid-15-5.nc","m")[1],
                     "v_min" => ncread("data/SeaFlow_SizeDist_regrid-15-5.nc","v_min")[1],
                     "delta_v_inv" => ncread("data/SeaFlow_SizeDist_regrid-15-5.nc","delta_v_inv")[1])
-					
-###############################################################################
 
 v_min = data_seaflow["v_min"]
 delta_v = 1.0/data_seaflow["delta_v_inv"]
 v = v_min .* 2 .^(collect(0:1:data_seaflow["m"]-1)*delta_v);
-
-###############################################################################
 
 inset_locator = pyimport("mpl_toolkits.axes_grid1.inset_locator")
 fig,axs = plt.subplots(nrows=2, sharex=true, figsize=(10,8))
@@ -26,8 +21,6 @@ pc = axs[2].pcolormesh(data_seaflow["time"],v,reverse(rotl90(data_seaflow["w_obs
 axs[2].set(ylabel=L"size\;(\mu m^3)", xlabel=L"time\;(minutes)")
 pcb = inset_locator.inset_axes(axs[2], width="3%", height="100%", loc=5, bbox_to_anchor=(0.05,0.0,1,1), bbox_transform=axs[2].transAxes)
 fig.colorbar(pc,cax=pcb, pad = 0.02);
-
-###############################################################################
 
 stan_code = """data {
     // size variables
@@ -169,8 +162,6 @@ model {
 }
 """;
 
-###############################################################################
-
 ### prepare data for stan model
 dt = 20 # in units of minutes
 data = Dict("dt" => dt,
@@ -209,43 +200,25 @@ end
 data["nt_obs"] = size(data["t_obs"],1)
 data["obs"] = reverse(rotl90(data["obs"]),dims=1);
 
-#############################################################################
-
 sm = SampleModel("MatrixModel", stan_code)
-
-#############################################################################
 
 (sample_file, log_file) = stan_sample(sm, data=data, n_chains = 4);
 
-#############################################################################
-
 chns = read_samples(sm)
-
-#############################################################################
 
 ESS = ess(chns)
 
-#############################################################################
-
 rawdata = DataFrame(chns, showall=true, sorted=true, append_chains=true);
 
-#############################################################################
-
 using StatsPlots
-
-#############################################################################
 
 paramdata = [rawdata.b rawdata.delta_max rawdata.gamma_max rawdata.E_star rawdata.sigma];
 paramname = ["b", "delta_max", "gamma_max", "E_star", "sigma"];
 StatsPlots.cornerplot(paramdata, compact=true, label = paramname,size=(1000,1000))
 
-#############################################################################
-
 res = Dict("model" => reshape(chns.info[1].x[2][1][6:695,2],15,46), "obs" => data["obs"])
 diff = res["model"]-res["obs"];
 t = collect(1:1:data["nt"])*data["dt"];
-
-#############################################################################
 
 cm = pyimport("matplotlib.cm")
 fig,axs = plt.subplots(5,1,sharex=true,figsize=(10,16))
@@ -281,8 +254,6 @@ for ax in axs
     end
 end
 
-##########################################################################
-
 v_ext = data["v_min"] .* 2 .^(collect(1:1:data["m"]) .*delta_v) 
 v_width = v_ext[2:end] .- v_ext[1:end-1]
 fig,axs = plt.subplots(nrows=length(slice_indices), sharex=true, figsize=(10,length(slice_indices)*3))
@@ -292,4 +263,5 @@ for i in 1:length(slice_indices)
     axs[i].set_ylabel("Proportion")
 end
 axs[1].legend();
+
 

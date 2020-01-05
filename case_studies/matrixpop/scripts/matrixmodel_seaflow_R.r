@@ -4,11 +4,7 @@ library(fields)
 library(rstan)
 options(mc.cores = parallel::detectCores())
 
-######################################################################
-
 nc <- nc_open('data/SeaFlow_SizeDist_regrid-15-5.nc')
-
-######################################################################
 
 PAR   <- ncvar_get(nc,'PAR')
 w_obs <- ncvar_get(nc,'w_obs')
@@ -17,18 +13,12 @@ delta_v_inv <- ncvar_get(nc,'delta_v_inv')
 v_min       <- ncvar_get(nc,'v_min')
 time  <- ncvar_get(nc,'time')
 
-######################################################################
-
 delta_v <- 1/delta_v_inv
-v       <- v_min*2^(0:14*delta_v)
-
-######################################################################
+v       <- v_min*2^(0:14*delta_v) 
 
 par(mfrow=c(2,1))
 plot(time,PAR,type='l',col='orange')
 image.plot(x=time,y=v,w_obs,col=viridis(15),xlab='time',ylab=expression('size ('*mu*'m'^3*')'))
-
-######################################################################
 
 stan_code = "data {
     // size variables
@@ -169,8 +159,6 @@ model {
     }
 }"
 
-#########################################################################
-
 data             <- list()
 data$w_obs       <- ncvar_get(nc,'w_obs')
 data$PAR         <- ncvar_get(nc,'PAR')
@@ -214,31 +202,19 @@ if(stride_t_obs > 0){
 
 data$nt_obs <- dim(data$obs)[2]
 
-########################################################################
-
 mod <- stan_model(model_code=stan_code)
-
-########################################################################
 
 mcmc <- sampling(mod,data=data,open_progress=TRUE,control=list(adapt_delta=0.95))
 
-########################################################################
-
 summary(mcmc,pars=c('b','delta_max','gamma_max','E_star','sigma'))$summary
 
-########################################################################
-
 post <- extract(mcmc)
-
-########################################################################
 
 pairs(data.frame(b=post$b,
                  delta_max=post$delta_max,
                  gamma_max=post$gamma_max,
                  E_star=post$E_star,
                  sigma=post$sigma)[sample(1:length(post$b),500),])
-				 
-########################################################################
 
 res  <- apply(post$mod_obspos,c(2,3),mean)
 diff <- res - data$obs
@@ -249,8 +225,7 @@ slice_indices <- c(1,3,16)
 v_ext <- data$v_min*2^(0:14*delta_v)
 v_width <- v_ext[2:15] - v_ext[1:14]
 
-########################################################################
-
+options(repr.plot.width=7, repr.plot.height=12)
 par(mfrow=c(8,1),mar=c(2,4,1,2))
 plot(t,data$E,col='orange',type='l')
 image.plot(x=data$t_obs,y=v,t(data$obs),col=viridis(15),xlab=''); box()
@@ -266,7 +241,3 @@ for(i in 1:length(slice_indices)){
         lines(v_ext,data$obs[,slice_indices[i]],col='red')
         legend('topright',legend=c('model','obs'),bty='n',lty=1,col=c('black','red'))
 }
-
-########################################################################
-
-

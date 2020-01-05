@@ -3,8 +3,6 @@ library(rstan)
 library(viridis)
 options(mc.cores = parallel::detectCores())
 
-############################################################################
-
 theta <- list(vmax       = 0.075,
               nuthalfsat = 0.3,
               graz       = 0.02,
@@ -24,8 +22,6 @@ i_n = 1
 i_p = 2
 i_z = 3
 
-###########################################################################
-
 dxdt <- function(t,x,theta){
     with(as.list(c(x,theta)),{
         light   = 1 + 0.5*(irr*sin(pi*((t-81.25)/182.5)) - irr)
@@ -37,12 +33,8 @@ dxdt <- function(t,x,theta){
         list(c(-growth + ploss + zloss,
                growth - grazing - ploss,
                grazing - zloss)) })}
-			   
-###########################################################################
 
 x <- as.data.frame(ode(y=x, times=t, func=dxdt, parms=theta))
-
-###########################################################################
 
 iobs <- sort(sample(1:length(t), 20)) 
 tobs <- t[iobs]
@@ -52,9 +44,8 @@ sigma <- c(0.03,0.03)
 
 obs <- cbind(x$P[iobs] + rnorm(length(iobs),sd=sigma[1]),
              x$Z[iobs] + rnorm(length(iobs),sd=sigma[2]))
-			 
-###########################################################################
 
+options(repr.plot.width=8, repr.plot.height=5)
 light <- 1 + 0.5*(theta$irr*sin(pi*((t-81.25)/182.5)) - theta$irr)
 
 plot(t,light/10,type='l',ylim=c(0,0.8),lty=2,col='orange',xlab='time (days)')
@@ -64,8 +55,6 @@ lines(t,x$Z,col='red')
 
 points(tobs,obs[,length(iobsvar)],col='dark green')
 points(tobs,obs[,length(iobsvar)],col='red')
-
-###########################################################################
 
 stan_code = "functions {
    real[] npz(real t,       // time
@@ -133,32 +122,21 @@ model {
     }
 }"
 
-#############################################################################
-
 mod <- stan_model(model_code = stan_code)
-
-#############################################################################
 
 data <- list(obs=obs,
              nobs=length(tobs),
              tobs=tobs,
              nobsvar=ncol(obs),
              iobsvar=iobsvar)
-			 
-#############################################################################
 
 mcmc <- sampling(mod,data=data,open_progress=TRUE)
 
-#############################################################################
-
 mcmc
-
-#############################################################################
 
 post <- extract(mcmc)
 
-#############################################################################
-
+options(repr.plot.width=8, repr.plot.height=5)
 light <- 1 + 0.5*(theta$irr*sin(pi*((t-81.25)/182.5)) - theta$irr)
 
 plot(t,light/10,type='l',ylim=c(0,0.8),lty=2,col='orange',xlab='time (days)')
@@ -182,9 +160,8 @@ points(tobs,q_p[2,],pch=8,col='dark green')
     segments(x0=tobs,x1=tobs,y0=q_p[1,],y1=q_p[3,],col='dark green')
 points(tobs,q_z[2,],pch=8,col='red')
     segments(x0=tobs,x1=tobs,y0=q_z[1,],y1=q_z[3,],col='red')
-	
-############################################################################
 
+options(repr.plot.width=8, repr.plot.height=5)
 par(mfrow=c(3,1),mar=c(3,4,1,3),oma=c(2,2,2,2))
 boxplot(post$x[,,1],names=tobs)
     points(x$N[iobs],col='blue',pch=8,cex=1.2)
@@ -201,7 +178,3 @@ boxplot(post$x[,,3],names=tobs)
     legend('topright',bty='n',legend=c('true state','observations'),col='red',pch=c(8,19))
     mtext('Z',side=2,line=2.5)
 mtext(outer=TRUE,side=1,'time (days)')
-
-
-
-

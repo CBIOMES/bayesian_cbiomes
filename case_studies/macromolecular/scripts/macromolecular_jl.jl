@@ -1,11 +1,9 @@
 using StanSample, CSV, DataFrames, PyPlot, Statistics
 
-####################################################################
+versioninfo()
 
 data = CSV.read("data/macromolecules.csv");
 NH4 = CSV.read("data/flynn_macromolecules.csv");
-
-####################################################################
 
 dat = join(data,NH4,on=:t);
 dat = hcat(dat[:,1:4],dat[:,7]);
@@ -15,8 +13,6 @@ y_data[:,1] = dat[:,4] .* 0.001;
 y_data[:,2] = dat[:,2] .* 0.001;
 y_data[:,3] = dat[:,3] .* 1000;
 y_data[:,4] = dat[:,5] .* 0.08325909;
-
-####################################################################
 
 fig, axs = PyPlot.subplots(2, 2, figsize = (6,4))
 axs[1].scatter(dat[:,1], y_data[:,1])
@@ -29,8 +25,7 @@ axs[3].set_title("Chl Quota")
 axs[4].set_title("Ammonium")
 fig.subplots_adjust(wspace=0.3, hspace=0.44)
 
-####################################################################
-
+###### macromolecular model stan code
 const macromolecularmodel = "functions {
   real[] macro(real   t,           // time
                real[] x,           // state x[1]:CH  x[2]:PR, x[3]:Chl , x[4]:N
@@ -96,32 +91,17 @@ model {
   }
 }";
 
-##################################################################
-
 macromoleculardata = Dict("n" => size(dat,1), "t_obs" => dat[:,1], "y" => y_data);
-
-##################################################################
 
 sm = SampleModel("MacroMolecularModel", macromolecularmodel)
 
-##################################################################
-
 (sample_file, log_file) = stan_sample(sm, data=macromoleculardata, n_chains = 4);
-
-##################################################################
 
 chns = read_samples(sm)
 
-##################################################################
-
 ESS = ess(chns)
 
-##################################################################
-
 rawdata = DataFrame(chns, showall=true, sorted=true, append_chains=true);
-
-##################################################################
-
 
 rawdata[:,17:end]
 dat_summary = zeros(35,4,4)
@@ -134,21 +114,15 @@ for i in 1:35
     end
 end
 
-##################################################################
-
 dat_mean = chns.info[1].x[2][1][17:end,2];
 dat_std = chns.info[1].x[2][1][17:end,3];
 dat_97 = chns.info[1].x[2][2][17:end,6];
 dat_2 = chns.info[1].x[2][2][17:end,2];
 
-##################################################################
-
 data_mean = reverse(rotl90(reshape(dat_mean,4,35)),dims=1)
 data_std = reverse(rotl90(reshape(dat_std,4,35)),dims=1)
 data_97 = reverse(rotl90(reshape(dat_97,4,35)),dims=1)
 data_2 = reverse(rotl90(reshape(dat_2,4,35)),dims=1);
-
-##################################################################
 
 fig, axs = PyPlot.subplots(2, 2, figsize = (6,4))
 axs[1].scatter(dat[:,1], y_data[:,1])
@@ -173,9 +147,6 @@ axs[3].set_title("Chl Quota")
 axs[4].set_title("Ammonium")
 fig.subplots_adjust(wspace=0.3, hspace=0.44)
 
-#################################################################
-
-
 fig, axs = PyPlot.subplots(2, 2, figsize = (6,4))
 axs[1].scatter(dat[:,1], y_data[:,1])
 axs[1].plot(dat[:,1], dat_summary[:,1,1],"r")
@@ -199,8 +170,6 @@ axs[3].set_title("Chl Quota")
 axs[4].set_title("Ammonium")
 fig.subplots_adjust(wspace=0.3, hspace=0.44)
 
-#################################################################
-
 cnames=["CNpro","KN","mu","CHsyn","m_ex","R_ex","tau","b"]
 fig, axs = PyPlot.subplots(4, 2, figsize = (8,8))
 for i in 1:8
@@ -210,8 +179,6 @@ for i in 1:8
 end
 fig.subplots_adjust(bottom=0.1, top=0.96, left=0.1, right=0.95,
                     wspace=0.2, hspace=0.4)
-					
-################################################################
 
 fig, axs = PyPlot.subplots(4, 2, figsize = (8,8))
 for i in 1:8
@@ -222,10 +189,5 @@ end
 
 fig.subplots_adjust(bottom=0.1, top=0.96, left=0.1, right=0.95,
                     wspace=0.2, hspace=0.4)
-					
-################################################################
-
-
-
 
 

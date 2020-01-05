@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# # SeaFlow data (regridded)
+
+# In[2]:
+
+
 import netCDF4 as nc4
 import numpy as np
 
@@ -8,14 +16,18 @@ data_seaflow = {}
 with nc4.Dataset(datafile) as nc:
     for var in nc.variables:
         data_seaflow[var] = nc.variables[var][:]
-		
-##########################################################################
+
+
+# In[3]:
+
 
 v_min = data_seaflow['v_min']
 delta_v = 1.0/data_seaflow['delta_v_inv']
-v = v_min * 2**(np.arange(data_seaflow['m'])*delta_v)
+v = v_min * 2**(np.arange(data_seaflow['m'])*delta_v) 
 
-##########################################################################
+
+# In[5]:
+
 
 import matplotlib.pyplot as plt
 import matplotlib as mpl
@@ -37,7 +49,13 @@ ax.set(ylabel='size ($\mu$m$^3$)', xlabel='time (minutes)')
 add_colorbar(ax, norm=pc.norm, cmap=pc.cmap, label='size class proportion')
 None
 
-##########################################################################
+
+# # The model
+# 
+# modified from *Sosik et al. (2003), Growth rates of coastal phytoplankton from time-series measurements with a submersible flow cytometer, Limnol. Oceanogr.*
+
+# In[4]:
+
 
 stan_code = '''data {
     // size variables
@@ -179,7 +197,9 @@ model {
 }
 '''
 
-################################################################################
+
+# In[5]:
+
 
 # prepare data for Stan model
 
@@ -224,19 +244,28 @@ data['nt_obs'] = data['obs'].shape[1]
 t = np.arange(data['nt'])*data['dt']
 data['E'] = np.interp(t, xp=data_seaflow['time'], fp=data_seaflow['PAR'])
 
-###############################################################################
+
+# In[6]:
+
 
 import pystan
 
 model = pystan.StanModel(model_code=stan_code)
 
-###############################################################################
+
+# In[7]:
+
 
 mcmc = model.sampling(data=data, iter=2000)
 print('\n'.join(x for x in mcmc.__str__().split('\n') if 'mod_obspos' not in x))
 
-###############################################################################
 
+# ## Plot the results
+
+# In[8]:
+
+
+paramnames = [v for v in mcmc.flatnames if not v.startswith('mod_obspos')]
 num_params = len(paramnames)
 
 fig,axs = plt.subplots(num_params-1,num_params-1,sharex='col',sharey='row',figsize=(12,12), squeeze=False)
@@ -253,8 +282,10 @@ for irow in range(1,num_params):
             ax.set_ylabel(yname)
         if irow == num_params-1:
             ax.set_xlabel(xname)
-			
-#############################################################################
+
+
+# In[9]:
+
 
 res = {'model':np.mean(mcmc['mod_obspos'], axis=0), 'obs':data['obs']}
 colors = {'model':'darkred', 'obs':'0.1'}
@@ -317,6 +348,9 @@ for i,ax in zip(slice_indices,axs.flat):
         ax.set_ylim(bottom=0.0)
 axs[0].legend()
 None
+
+
+# In[ ]:
 
 
 
