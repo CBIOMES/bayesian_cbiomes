@@ -1,0 +1,26 @@
+#!/bin/bash
+cd ~
+mkdir cmdStan
+cd cmdStan/
+git clone https://github.com/stan-dev/cmdstan.git --recursive
+cd cmdstan/
+make build
+cd ~
+mkdir -p .julia/config
+cat > .julia/config/startup.jl <<'EOFA'
+ENV["JULIA_CMDSTAN_HOME"]="/home/jovyan/cmdStan/cmdstan"
+EOFA
+
+cat > init_julia_env.jl <<'EOFA'
+import Pkg; 
+Pkg.add("StanSample"); Pkg.build("StanSample");
+Pkg.add("CSV");  Pkg.build("CSV");      
+Pkg.add("DataFrames"); Pkg.build("DataFrames");
+Pkg.add("PyPlot");     Pkg.build("PyPlot");
+Pkg.add("Statistics"); Pkg.build("Statistics"); 
+Pkg.add("Distributions"); Pkg.build("Distributions"); 
+Pkg.add("Random"); Pkg.build("Random")
+Pkg.add("StatsPlots"); Pkg.build("StatsPlots")
+EOFA
+
+julia init_julia_env.jl
