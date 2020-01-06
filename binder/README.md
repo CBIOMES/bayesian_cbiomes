@@ -3,9 +3,10 @@ repo2docker.
 
 To use repo with free public binder use, for example, https://mybinder.org/v2/gh/christophernhill/bayesian_cbiomes/cnh/add-repo2docker
 
-To use on a local system use the following commands, for example
+To use on a local computer the following commands are needed
 
-First set up environment in some directory
+First set up environment in some directory (these commands are for MacOS, but similar commands
+work on Windows or Linux - see https://docs.conda.io/en/latest/miniconda.html )
 ```
 curl  https://repo.continuum.io/miniconda/Miniconda2-4.7.12.1-MacOSX-x86_64.sh > Miniconda2-4.7.12.1-MacOSX-x86_64.sh
 chmod +x Miniconda2-4.7.12.1-MacOSX-x86_64.sh
