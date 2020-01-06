@@ -26,3 +26,6 @@ conda activate myr2d
 repo2docker --user-id 1000 --user-name jovyan https://github.com/christophernhill/bayesian_cbiomes
 
 ```
+
+Note - the R dependency in ``runtime.txt`` will be ignored by repo2docker if a Julia config is
+requested (specified in REQUIRES). repo2docker can only build one of R or Julia at one time.
