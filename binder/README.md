@@ -1,9 +1,9 @@
 Code to allow building working code either in binder or on local machine using
 repo2docker. 
 
-To use repo with free public binder use 
+To use repo with free public binder use, for example, https://mybinder.org/v2/gh/christophernhill/bayesian_cbiomes/cnh/add-repo2docker
 
-To use on a local system 
+To use on a local system use the following commands, for example
 
 First set up environment in some directory
 ```
