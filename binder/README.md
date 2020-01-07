@@ -1,8 +1,8 @@
 Code to allow building working code either in [__Binder__](https://mybinder.org) or on local machine using
 [```repo2docker```](https://repo2docker.readthedocs.io/en/latest/). 
 
-To launch repo code running in the free public binder platform use, for example, https://mybinder.org/v2/gh/jpmattern/bayesian_cbiomes/master
-This can be somewhat slow, depending on the load from other project on the web that may be using free [project Binder](https://jupyter.org/binder) https://mybinder.org resources at the same time. The virtual machines that are provided for free by https://mybinder.org are not very large. Some of the Python examples in the repo fail due to lack of resources. Interestingly the Julia equivalents work OK.
+To launch repo code running in the free public binder platform use, for example, https://mybinder.org/v2/gh/jpmattern/bayesian_cbiomes/master .
+This can be somewhat slow, depending on the load from other projects on the web that may be using free [project Binder](https://jupyter.org/binder) https://mybinder.org resources at the same time. The virtual machines that are provided for free by https://mybinder.org are not very large. Some of the Python examples in the repo fail due to lack of resources. Interestingly the Julia equivalents work OK.
 
 For heavier cloud use it can be better to set up a dedicated Binder hub resource. The steps for this are described in the [Binderhub documentation](https://binderhub.readthedocs.io/en/latest/zero-to-binderhub/index.html). They are a little involved and require a cloud provider account, but they do work. Most universities have Google, AWS and Azure cloud credit programs. MIT researchers can request Google and Azure credits [here](https://cloud.mit.edu/credits).
 
