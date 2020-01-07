@@ -4,11 +4,11 @@ Code to allow building working code either in [__Binder__](https://mybinder.org)
 To launch repo code running in the free public binder platform use, for example, https://mybinder.org/v2/gh/jpmattern/bayesian_cbiomes/master .
 This can be somewhat slow, depending on the load from other projects on the web that may be using free [project Binder](https://jupyter.org/binder) https://mybinder.org resources at the same time. The virtual machines that are provided for free by https://mybinder.org are not very large. Some of the Python examples in the repo fail due to lack of resources. Interestingly the Julia equivalents work OK.
 
-For heavier cloud use it can be better to set up a dedicated Binder hub resource. The steps for this are described in the [Binderhub documentation](https://binderhub.readthedocs.io/en/latest/zero-to-binderhub/index.html). They are a little involved and require a cloud provider account, but they do work. Most universities have Google, AWS and Azure cloud credit programs. MIT researchers can request Google and Azure credits [here](https://cloud.mit.edu/credits).
+For heavier cloud use it can be better to set up a dedicated Binder hub resource. The steps for this are described in the [Binderhub documentation](https://binderhub.readthedocs.io/en/latest/zero-to-binderhub/index.html). The steps are a little involved and require a cloud provider account, but they do work. Most universities have Google, AWS and Azure cloud credit programs. MIT researchers can request Google and Azure credits [here](https://cloud.mit.edu/credits).
 
 Usefully, the binder directory configuration can also be used on a laptop/desktop computer to launch a Docker 
 container running the same environment as served by Binder, but executing on a local machine. This can be useful for 
-testing things and for executing in an isolated environment. To use on a local computer Docker must be installed on the computer (see https://www.docker.com/get-started) first. Then some somewhat obscure commands can be used to create a 
+testing things and for executing in an isolated environment. To use on a local computer Docker must be installed on the computer (see https://www.docker.com/get-started) first. Then, some somewhat obscure commands are used to create a 
 nicely isolated conda environment for running ```repo2docker``` as follows:
 
 First set up environment in some directory (these commands are for MacOS, but similar commands
@@ -41,7 +41,7 @@ text of the form
     Or copy and paste one of these URLs:
         http://127.0.0.1:51875/?token=db1d7cfc01cfe66f639b377d918c4121585677ec18415c52
 ```
-will be printed in the terminal running ```repo2docker```. Pasting the URL into a browser on the local
+will be printed in the terminal running ```repo2docker```. Pasting the URL (last line) into a browser on the local
 machine should connect to the Jupyter environment for executing the notebooks.
 
 Note - the R dependency in ``runtime.txt`` will be ignored by repo2docker if a Julia config is
