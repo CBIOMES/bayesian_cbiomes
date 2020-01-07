@@ -96,23 +96,23 @@ This should return you a table of estimated coefficients.
 
 ## Julia
 
-Stan.jl uses `cmdstan` which will need to install first.
-To do so, clone the following repo from the folder where you would like to install the program
+`Stan.jl` uses `cmdstan` which will need to install first.
+
+To do so, open a terminal window, go to the folder where you would like to download `cmdstan`, and clone the `cmdstan` repository as follows.
 
 `git clone https://github.com/stan-dev/cmdstan.git --recursive`
 
-which will download the folder `cmdstan` into whichever folder you currently are.
-Now navigate into the that folder with
+This will download the folder `cmdstan` into whichever folder you currently are.
+Now enter that folder and compile `cmdstan`.
 
-`cd cmdstan`
+```
+cd cmdstan
+make build
+```
 
-and issue 
+This can take 5 or 10 minutes. 
 
-`make build`
-
-which will install `cmdstan`. This can take 5 or 10 minutes. 
-
-Then, store the path to `cmdstan` in environment variables. 
+Before starting `julia`, store the path to `cmdstan` in suitable environment variables. 
 
 ```
 export JULIA_CMDSTAN_HOME=$PWD
