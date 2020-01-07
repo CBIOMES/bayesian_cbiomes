@@ -110,16 +110,25 @@ and issue
 
 `make build`
 
-which will install `cmdstan`. 
-This can take 5 or 10 minutes.
+which will install `cmdstan`. This can take 5 or 10 minutes. 
 
-After that installation is finished you can install `Stan.jl`.
-To do so, open the Julia prompt and issue
+Then, store the path to `cmdstan` in environment variables. 
 
-`Pkg.add("StanSample")`
+```
+export JULIA_CMDSTAN_HOME=$PWD
+export CMDSTAN_HOME=$PWD
+```
 
-We will try to fit a simple linear regression to see if Stan is installed correctly. 
-Open Julia and issue:
+Once this is done, start `julia` and add `Stan.jl` + `StanSample.jl`.
+
+```
+using Pkg
+Pkg.add("Stan")
+Pkg.add("StanSample")
+```
+
+To see if Stan is installed correctly, try to fit a simple linear regression.
+
 ````
 using StanSample
 
@@ -143,5 +152,6 @@ mod_compile = SampleModel("mod", mod, method=StanSample.Sample(save_warmup=true,
 stan_sample(mod_compile, data=data);
 println(read_summary(mod_compile));
 ````
+
 This should return you a table of estimated coefficients. 
 
