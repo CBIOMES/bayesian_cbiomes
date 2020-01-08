@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# # Confront the NPZ model with real data from Narrangansett Bay
+# # Confront the NPZ model with real data from Narragansett Bay
 # 
 # ## 1. A first look at the data
 

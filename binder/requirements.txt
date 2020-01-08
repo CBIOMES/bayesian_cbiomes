@@ -1,0 +1,4 @@
+pystan
+matplotlib
+scipy
+netCDF4
