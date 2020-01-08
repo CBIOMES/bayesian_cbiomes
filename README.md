@@ -22,4 +22,11 @@ In preparation for the meeting and if Stan is not yet installed on your system f
    [MITgcm manual Git intro section](https://mitgcm.readthedocs.io/en/latest/contributing/contributing.html#detailed-guide-for-those-less-familiar-with-git-and-github)
    
    [Github guides collection](https://guides.github.com)
+   
+ * Some timely videos added on [3blue1brown](https://www.3blue1brown.com) last week
+ 
+   [Intro to Bayes](https://www.youtube.com/watch?v=HZGCoVF3YvM)
+   
+   [Testing Bayes](https://www.youtube.com/watch?v=U_85TaXbeIo)
+
 
