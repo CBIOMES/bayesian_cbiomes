@@ -30,6 +30,6 @@ In preparation for the meeting and if Stan is not yet installed on your system f
  
    [Intro to Bayes](https://www.youtube.com/watch?v=HZGCoVF3YvM), includes references to the [SS Central America](https://en.wikipedia.org/wiki/SS_Central_America) and other Bayes legends.
    
-   [Testing Bayes](https://www.youtube.com/watch?v=U_85TaXbeIo)
+   [Testing Bayes](https://www.youtube.com/watch?v=U_85TaXbeIo), simple visual working through of Bayes algebra - with nice graphics!
 
 
