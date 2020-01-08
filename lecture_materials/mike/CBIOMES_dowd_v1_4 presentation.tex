@@ -1,0 +1,664 @@
+%\documentclass[draft,envcountsect]{beamer}
+\documentclass{beamer}
+\usepackage{amsmath,amssymb,amsfonts,amsthm,latexsym,color}
+\usepackage{epsf}
+\usepackage{graphicx}
+% set the theme
+%   no navigation bar: Boadilla
+% with navigation bar: Goettingen, Hannover, Berkeley, PaloAlto,
+\mode<presentation>{
+\usetheme{Berlin} % see userguide p125ff
+
+\usecolortheme{default} % see userguide p152ff
+\setbeamercovered{transparent}
+}
+
+\DeclareMathOperator*{\argmax}{argmax} % thin space, limits underneath in displays
+
+
+\title{Bayesian Inference for Dynamic Systems: \\
+Background and Concepts}
+\author{Mike Dowd \\ Dalhousie University}
+\date{January 2020}
+
+%\AtBeginSubsection[]
+%{
+%  \begin{frame}<beamer>
+%    \frametitle{Outline}
+%    \tableofcontents[currentsection]
+%  \end{frame}
+%}
+
+% If you wish to uncover everything in a step-wise fashion, uncomment
+% the following command:
+%\beamerdefaultoverlayspecification{<+->}
+
+
+
+% SPECIAL COMMANDS
+%\def\Re{{\mathbb R}}
+%\def\Na{{\mathbb N}}
+%\newcommand{\Ind}{\mathbf{1}}
+%\newcommand{\E}{\operatorname{E}}
+%\newcommand{\Cov}{\operatorname{Cov}}
+%\newcommand{\supp}{\operatorname{supp}}
+%\newcommand{\Var}{\operatorname{Var}}
+%\newcommand{\trace}{\operatorname{trace}}
+%\renewcommand{\P}{\operatorname{P}}
+%\renewcommand{\mathbf}{\boldsymbol}
+%\newcommand{\iid}{\operatorname{iid}}
+%\newcommand{\argmin}{\mathop{\mathrm{argmin}}}
+%\newcommand{\med}{\mathop{\mathrm{med}}}
+%\newcommand{\ED}{{\mathbb F}_n}
+%\newcommand{\T}{^{\top}}
+%\def\op{o_{\rm p}}
+%\def\Op{O_{\rm p}}
+%\def\Var{\mathop{\rm Var}\nolimits}
+%\def\Bias{\mathop{\rm Bias}\nolimits}
+%\def\Mse{\mathop{\rm Mse}\nolimits}
+%\def\a{\alpha}
+%\def\as{^*}
+%\def\be{\mathbf e}
+%\def\bR{\mathbb R}
+%\def\cA{{\mathcal A}}
+%\def\cM{{\mathcal M}}
+%\def\ep{\epsilon}
+%\def\ga{\gamma}
+%\def\ha{\hat\alpha}
+%\def\bha{\bar{\hat\alpha}}
+%\def\half{^{1/2}}
+%\def\hep{\widehat \epsilon}
+%\def\hg{\widehat g}
+%\def\hsi{\widehat\sigma}
+%\def\hth{\widehat \theta}
+%\def\nn{\nonumber}
+%\def\mhf{^{-1/2}}
+%\def\mo{^{-1}}
+%\def\si{\sigma}
+%\def\sumion{\sum_{i=1}^n}
+%\def\sumjon{\sum_{j=1}^n}
+%\def\sumkon{\sum_{k=1}^n}
+%\def\th{\theta}
+%\def\tx{\tilde x}
+%\def\tX{\tilde X}
+%\def\ty{\tilde y}
+
+\newcommand{\LengthUnit}	{\mbox{${\rm m}$}}
+\newcommand{\MassUnit}		{\mbox{${\rm kg}$}}
+\newcommand{\TemperatureUnit}	{\mbox{$^\circ{\rm C}$}}
+\newcommand{\TimeUnit}		{\mbox{${\rm s}$}}
+\newcommand{\km}		{\mbox{${\rm km}$}}
+\newcommand{\m} 		{\mbox{${\rm m}$}}
+\newcommand{\cm} 		{\mbox{${\rm cm}$}}
+\newcommand{\s} 		{\mbox{${\rm s}$}}
+\newcommand{\p}{\partial}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\lam}{\lambda}
+\newcommand{\tlam}{\tilde{\lambda}}
+\newcommand{\Lam}{\Lambda}
+\newcommand{\alp}{\alpha}
+\newcommand{\om}{\omega}
+\newcommand{\sig}{\sigma}
+\newcommand{\tPhi}{\tilde{\Phi}}
+\newcommand{\talp}{\tilde{\alpha}}
+\newcommand{\tLam}{\tilde{\Lambda}}
+\newcommand{\ttPhi}{\tilde{\tilde{\Phi}}}
+\newcommand{\ttalp}{\tilde{\tilde{\alpha}}}
+\newcommand{\ttLam}{\tilde{\tilde{\Lambda}}}
+\newcommand{\ul}{\underline}
+\newcommand{\ol}{\overline}
+\newcommand{\var}{\mbox{var}}
+\newcommand{\cov}{\mbox{cov}}
+\newcommand{\diag}{\mbox{diag}}
+\newcommand{\be}{\begin{equation}}
+\newcommand{\ee}{\end{equation}}
+\newcommand{\bphi}{\mbox{\boldmath $\phi$}}
+\newcommand{\tbphi}{\tilde{\mbox{\boldmath $\phi$}}}
+\newcommand{\balp}{\mbox{\boldmath $\alpha$}}
+\newcommand{\tbalp}{\tilde{\mbox{\boldmath $\alpha$}}}
+\newcommand{\blam}{\mbox{\boldmath $\lambda$}}
+\newcommand{\boldeta}{\mbox{\boldmath $\eta$}}
+\newcommand{\bPhi}{{\bf \Phi}}
+\newcommand{\tbPhi}{{\tilde{\bf \Phi}}}
+\newcommand{\bLam}{{\bf \Lambda}}
+\newcommand{\tbLam}{{\tilde{\bf \Lambda}}}
+\newcommand{\bx}{{\bf x}}
+\newcommand{\by}{{\bf y}}
+\newcommand{\bD}{{\bf D}}
+\newcommand{\bfor}{{\bf f}}
+\newcommand{\bG}{{\bf G}}
+\newcommand{\bF}{{\bf F}}
+\newcommand{\bz}{{\bf z}}
+\newcommand{\bH}{{\bf H}}
+\newcommand{\tbH}{{\tilde{\bf H}}}
+\newcommand{\bh}{{\bf h}}
+\newcommand{\bn}{{\bf n}}
+\newcommand{\bK}{{\bf K}}
+\newcommand{\bM}{{\bf M}}
+\newcommand{\bP}{{\bf P}}
+\newcommand{\bQ}{{\bf Q}}
+\newcommand{\bR}{{\bf R}}
+\newcommand{\bL}{{\bf L}}
+\newcommand{\bI}{{\bf I}}
+\newcommand{\bs}{{\bf s}}
+\newcommand{\bA}{{\bf A}}
+\newcommand{\bee}{{\bf e}}
+\newcommand{\bb}{{\bf b}}
+\newcommand{\bS}{{\bf S}}
+\newcommand{\bd}{{\bf d}}
+\newcommand{\bW}{{\bf W}}
+\newcommand{\bw}{{\bf w}}
+\newcommand{\bZ}{{\bf Z}}
+\newcommand{\bY}{{\bf Y}}
+\newcommand{\tbD}{{\tilde{\bf D}}}
+\newcommand{\tbx}{{\tilde{\bf x}}}
+\newcommand{\bGam}{{\bf \Gamma}}
+\newcommand{\bmu}{\mbox{\boldmath $\mu$}}
+\newcommand{\Gam}{{\Gamma}}
+\newcommand{\gam}{{\gamma}}
+\newcommand{\bk}{{\bf k}}
+\newcommand{\gamobs}{\gamma_{\mbox{obs}}}
+\newcommand{\bU}{{\bf U}}
+\newcommand{\bV}{{\bf V}}
+\newcommand{\bu}{{\bf u}}
+\newcommand{\bv}{{\bf v}}
+\newcommand{\br}{{\bf r}}
+\newcommand{\bbeta}{\mbox{\boldmath $\beta$}}
+\newcommand{\bgam}{\mbox{\boldmath $\gamma$}}
+\newcommand{\bB}{{\bf B}}
+\newcommand{\wobs}{\kappa_o}
+\newcommand{\wone}{\kappa_1}
+\newcommand{\wtwo}{\kappa_2}
+\newcommand{\bups}{\mbox{\boldmath $\upsilon$}}
+\newcommand{\bUps}{{\bf \Upsilon}}
+\newcommand{\bC}{{\bf C}}
+\newcommand{\bc}{{\bf c}}
+\newcommand{\bSig}{{\bf \Sigma}}
+
+\newcommand{\ie}{{\it i.e.~}}
+\newcommand{\eg}{{\it e.g.~}}
+\newcommand{\Sv}{\times 10^6\LengthUnit^3\TimeUnit^{-1}}
+
+
+
+% modifications on latex commands
+\renewcommand{\bf}{\bfseries}
+\renewcommand{\tilde}[1]{\widetilde{#1}}
+\renewcommand{\hat}[1]{\widehat{#1}}
+%\renewcommand{\theenumi}{(\roman{enumi})}
+%\renewcommand{\labelenumi}{\theenumi}
+
+% shortcuts
+\def\bea{\begin{eqnarray*}}
+\def\eea{\end{eqnarray*}}
+\def\be{\begin{equation}}
+\def\ee{\end{equation}}
+\def\bean{\begin{eqnarray}}
+\def\eean{\end{eqnarray}}
+
+
+
+\begin{document}
+
+\section{Introduction}
+\frame{\titlepage}
+
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+%\subsection{}
+
+\frame%[allowframebreaks,allowdisplaybreaks]
+%\begin{frame}
+  {\frametitle{Outline}
+
+%%\tableofcontents
+  
+%\tableofcontents[pausesections]
+
+\begin{itemize}
+\item The Bayesian Approach
+\item Process Model
+\item Data Model
+\item Prior Information
+\item MCMC
+\end{itemize}
+}
+%\end{frame}
+
+% =====
+
+\frame%[allowframebreaks,allowdisplaybreaks]
+%\begin{frame}
+{\frametitle{What is Bayes Theorem?}
+%  \tableofcontents[pausesections]
+
+\medskip
+GOAL: Given observations, $y$, we want to determine the parameters, $\theta$, taking into account our prior knowledge.
+
+\pause
+\medskip
+Bayes' theorem states: 
+\[
+[\theta | y] =\frac{ [ y | \theta ] \cdot [\theta]}{[y]} \propto [ y | \theta ] \cdot [\theta]
+\]
+
+\pause
+where:
+\begin{itemize}
+\item
+$[\theta | y]$ : posterior pdf of parameters given observations (the target quantity we want to estimate)
+\pause
+\item
+$[y | \theta]$: likelihood of data given a set of parameters 
+\pause
+\item
+$[\theta]$: prior pdf of the parameters
+\pause
+\item
+$[y]$: (unconditional) observation pdf (normalizing constant, not needed)
+
+\end{itemize}
+
+}
+
+% =====
+
+\frame%[allowframebreaks,allowdisplaybreaks]
+%\begin{frame}
+{\frametitle{Dynamic Systems: the Process Model}
+%  \tableofcontents[pausesections]
+A dynamic system takes the form
+\[
+dx/dt = f(x,\theta,w(t))
+\] 
+\pause
+where 
+\begin{itemize}
+\item
+$x(t)$: state of the system over time (univariate or multivariate)
+\pause
+\item
+$\theta$: parameters
+\pause
+\item
+$f$: dynamical operator (nonlinear function)
+\pause
+\item
+$w(t)$: forcing (deterministic or stochastic)
+\end{itemize}
+
+\pause
+\medskip
+Note:  the state $x$ can be compared directly to observations $y$, but the parameters $\theta$ are only indirectly related (via the state).
+}
+
+\frame%[allowframebreaks,allowdisplaybreaks]
+%\begin{frame}
+{\frametitle{Bayesian Hierarchical Model}
+%  \tableofcontents[pausesections]
+
+Bayes theorem can expanded hierarchically
+\begin{multline*}
+[process, parameter | data]  \propto  \\ [data | process, parameter] \cdot [process | parameter] \cdot [parameter]
+\end{multline*}
+\pause
+or
+\[
+[x,\theta | y] \propto [y | x, \theta] \cdot [x | \theta] \cdot [\theta]
+\]
+
+\pause
+\medskip
+The target posterior, $[x,\theta | y]$, is now expressed as a product of: 
+\begin{enumerate}
+\pause
+\item
+data model: $[y | x, \theta]$
+\pause
+\item
+process model:  $[x | \theta]$
+\pause
+\item
+parameter prior:  $[\theta]$
+\end{enumerate}
+\pause
+{\bf Advantage}: each of these can be developed in isolation, and then recombined. 
+}
+
+\frame%[allowframebreaks,allowdisplaybreaks]
+%\begin{frame}
+{\frametitle{Bayesian Computation}
+%  \tableofcontents[pausesections]
+
+\begin{itemize}
+\item
+The target posterior probability distributions can only analytically solved for (i.e. the probability distributions mathematically manipulated) in the simplest of cases (e.g. linear and Gaussian problems, exponential family distributions)
+\pause
+\item
+{\bf Idea}: probability distributions can be represented by samples 
+\pause
+\item
+Computational Bayesian methods are based on rules for manipulating / transforming samples, instead of transforming probability distributions directly
+\end{itemize}
+
+\pause
+\color{red} DEMO: DISTRIBUTIONS AS SAMPLES
+}
+
+
+%%%%%%%%
+\section{Process Model}
+
+\frame%[allowframebreaks,allowdisplaybreaks]
+%\begin{frame}
+{\frametitle{P Growth Toy Model}
+%  \tableofcontents[pausesections]
+
+A simple one compartment phytoplankton growth model is
+\[
+\frac{d P}{dt} = \gamma(1 + sin (\omega t)) P - \lambda P^2
+\]
+where 
+\begin{itemize}
+\item
+$P$: phytoplankton biomass/concentration, 
+\item
+$\gamma$: growth rate 
+\item
+$\lambda$: mortality/loss term. 
+\end{itemize}
+
+\pause
+Features: (i) nonlinear (quadratic loss), (ii) annual modulation of growth
+
+}
+
+\frame%[allowframebreaks,allowdisplaybreaks]
+%\begin{frame}
+{\frametitle{Numerical Solution}
+%  \tableofcontents[pausesections]
+
+The first step is the discretize the model (simplest Euler Method)
+\[
+P_{t+\Delta} = P_t + \Delta \left( \gamma (1+sin(\omega t)) P_t  - \lambda P_t^2 \right)
+\]
+where $\Delta$ is the time step. 
+
+\pause
+\medskip
+\color{red}  DEMO: DISCRETIZING A MODEL
+
+\pause
+\medskip
+Remarks: 
+\begin{itemize}
+\pause
+\item
+this discretization is not unique (built-in ODE solvers typically use Runge-Kutta) 
+\pause
+\item
+the size of the time step $\Delta$ matters (smaller is accurate, but also slow). Affects numerical stability 
+\end{itemize}
+
+\pause
+\color{red}  DEMO: NUMERICAL SIMULATION
+}
+
+\frame%[allowframebreaks,allowdisplaybreaks]
+%\begin{frame}
+{\frametitle{Stochastic Dynamics}
+%  \tableofcontents[pausesections]
+
+Bayesian models often rely on stochastic dynamics. Randomness can be incorporated as:
+\begin{enumerate}
+\pause
+\item
+Additive Noise on the State
+\pause
+\item
+Stochastic Parameters
+\pause
+\item
+Stochastic Dynamic Parameters
+\end{enumerate}
+
+\pause
+\medskip
+Concepts: 
+\begin{itemize}
+\pause
+\item
+{\it Realizations}: One run of a stochastic model (a possible outcome)
+\pause
+\item
+{\it Ensembles}: A set of realizations from which statistical properties can be derived
+
+\end{itemize}
+
+\pause
+\medskip
+\color{red} DEMO: REALIZATIONS AND ENSEMBLES
+
+}
+
+%%%%%%%
+\section{Data Model}
+
+\frame%[allowframebreaks,allowdisplaybreaks]
+%\begin{frame}
+{\frametitle{The Data Model}
+%  \tableofcontents[pausesections]
+
+\begin{itemize}
+\pause
+\item
+The data model is the probability distribution of the observations $[y|\theta]$. It can expressed as a {\it likelihood} $L(\theta|y)$.
+\pause
+\item
+It measures how consistent (or likely) the model parameters are with the observations. 
+\pause
+\item
+The likelihood in intimately linked to cost function used in data assimilation  (the form of cost function is dictated by $[y|\theta]$). Optimization is used to estimate parameters
+\end{itemize}
+}
+
+
+\frame%[allowframebreaks,allowdisplaybreaks]
+%\begin{frame}
+{\frametitle{Remarks of Observations of Lower Trophic Level Biology}
+%  \tableofcontents[pausesections]
+
+\begin{itemize}
+\pause
+\item
+Bias is often an important or perhaps dominant form of error. It, however, is usually treated as an external calibration exercise or as part of the Bayesian model (i.e. estimating offsets)
+\pause
+\item
+Variability is more than just instrument or laboratory errors. It includes unresolved environmental variability. These are errors of representativeness or change of support (e. g. data conforms to a point sample, while you are modelling a spatial and/or temporal average). 
+\pause
+\item
+Systems of interest are usually {\it partially observed}. Not all prognostic variables are measured, and sampling through time may not occur at regularly spaced intervals.
+\end{itemize}
+}
+
+\frame%[allowframebreaks,allowdisplaybreaks]
+%\begin{frame}
+{\frametitle{Estimating Parameters via the Likelihood}
+%  \tableofcontents[pausesections]
+
+Assume (for simplicity) that the state, $x$, is a deterministic function of the parameters, i.e. $x = g(\theta)$.
+
+\pause
+Steps:
+\medskip
+\begin{enumerate}
+\pause
+\item
+{\it \bf Define the data model.} Example: For a normal distribution $[y | \theta] = L(\theta | y) = \frac{1}{\sqrt{2 \pi} \sigma^2} \exp \{ \frac{1}{2 \sigma^2} \left( y - g(\theta) \right)^2 \}$
+\pause
+\item
+{\it \bf Find the $\theta$ value that maximizes $L(\theta | y)$.}  Example: With $\sigma^2$ constant,  we maximize  $ J (\theta) = -\left( y - g(\theta) \right)^2$ with respect to $\theta$. Same as nonlinear least squares. 
+\end{enumerate}
+
+\pause
+\medskip
+\color{red} DEMO: PROFILE LIKELIHOOD, LIKELIHOOD SURFACE, OPTIMIZERS
+
+}
+
+\section{Priors}
+
+\frame%[allowframebreaks,allowdisplaybreaks]
+%\begin{frame}
+{\frametitle{Prior Information}
+%  \tableofcontents[pausesections]
+
+The use of prior information for estimation is the salient (and unique) feature of Bayesian inference
+\begin{itemize}
+\pause
+\item
+Probability distributions $[\theta]$ are specified for all of the parameters. They act as constraints on plausible parameter values (e.g. same way optimization uses bounding and ranges)
+\pause
+\item
+They are based on expert knowledge. In ecology they are derived from lab and field experiments (i.e. the literature). 
+\pause
+\item
+Priors are classified as informative or non-informative (vague). You generally put a prior on everything. 
+
+\end{itemize}
+
+\pause
+\color{red} DEMO: PRIORS, AND SAMPLING FROM PRIORS
+
+}
+
+\section{MCMC}
+
+
+\frame%[allowframebreaks,allowdisplaybreaks]
+%\begin{frame}
+{\frametitle{Bayesian Computation}
+%  \tableofcontents[pausesections]
+
+\begin{itemize}
+\pause
+\item
+Computational Bayesian approaches are concerned with solving the following equations (the BHM model):
+\[
+[x,\theta | y] \propto [y | x, \theta] \cdot [x | \theta] \cdot [\theta]
+\]
+That is, determining the {\it posterior} using the {\it data model} , the {\it process model}, and the {\it prior distributions}
+\pause
+\item
+Markov Chain Monte Carlo (MCMC) algorithms are used. These provide for sampling based solutions (they generate a samples that has has the property of being a draw from the target posterior). Statistics (e.g. mean, variance) can then be derived from the samples.
+
+\end{itemize}
+
+}
+
+\frame%[allowframebreaks,allowdisplaybreaks]
+%\begin{frame}
+{\frametitle{MCMC: The Metropolis-Hasting Algorithm}
+%  \tableofcontents[pausesections]
+
+\begin{itemize}
+\pause
+\item
+The Metropolis-Hasting algorithm is a popular, effective,  and understandable MCMC algorithm for sample-based inference.
+\pause
+\item 
+It comprises a set of rules for generating a samples $\{ x^{(i)}, \theta^{(i)} \}_{i=1}^n$ from the target posterior $[x, \theta | y]$ (i.e. which is the answer to the problem you are solving).
+\pause
+\item
+The basic idea is to (intelligently) propose answers, then evaluate how probable they each are (relative to previous proposals). 
+
+\end{itemize}
+
+\pause
+Next , for simplicity we'll consider M-H MCMC using a deterministic system where $x = g(\theta)$, so the posterior $ [x,\theta | y] = [\theta | y]$
+}
+
+\frame
+{ \frametitle{Metropolis-Hastings Algorithm: Prior as Proposal, Independence sampler}
+
+\small 
+\textbf{Goal:} estimate a sample from the posterior $[\theta | y]$ using the (i) observations $y$, (ii) the process model $x = g(\theta)$, and (ii) the prior $[ \theta ]$ \\ 
+Start with an initial sample member $\theta^{(0)} $ 
+\pause
+\begin{itemize}	
+		\item For $i=1,2,\dots,n$
+		\begin{enumerate}
+			\item Draw a candidate $\theta^c$ from the prior $ [\theta] $.
+			\item Compute the acceptance probability $\alpha= \frac{[y|\theta^c]}{[y|\theta^{(i-1)}]} = \frac{L(\theta^c | y)}{L(\theta^{(i-1) | y})}$. 
+			\item Accept $\theta^{(i)} = \theta^c$ with probability $\alpha^*=min\{\alpha,1\}$, otherwise $\theta^{(i)} = \theta^{(i-1)}$
+		\end{enumerate} 
+\pause
+		\item Yields the sample $ \{ \theta^{(i)} \}_{i=1}^n $ 
+\end{itemize}
+
+\pause
+This is perhaps the simplest M-H algorithm, but not the best. Why? \pause Prior is not ideal proposal, no memory effects in generating sample \\
+
+\pause
+\medskip
+\color{red} DEMO: M-H INDEPENDENCE SAMPLER 
+
+}
+
+\frame
+{ \frametitle{Metropolis-Hastings Algorithm: Random Walk Sampler}
+
+\small 
+\textbf{Goal:} estimate a sample from the posterior $[\theta | y]$ using the (i) observations $y$, (ii) the process model $x = g(\theta)$, and (ii) the prior $[ \theta ]$ \\ 
+Start with an initial sample member $\left \lbrace  \theta^{(0)}  \right \rbrace $ 
+\pause
+\begin{itemize}	
+		\item For $i=1,2,\dots,n$
+		\begin{enumerate}
+			\item Draw a candidate $\theta^c=\theta^{(i-1)} + \epsilon$ where $\epsilon \sim N(0,\sigma_\epsilon^2)$
+			\item Compute the acceptance probability $\alpha= \frac{[y|\theta^c] [\theta = \theta^c]}{[y|\theta^{(i-1)}] [\theta = \theta^{(i-1)}]  } $. 
+			\item Accept $\theta^{(i)} = \theta^c$ with probability $\alpha^*=min\{\alpha,1\}$, otherwise $\theta^{(i)} = \theta^{(i-1)}$
+		\end{enumerate} 
+\pause
+		\item Yields the sample $ \{ \theta^{(i)} \}_{i=1}^n $ 
+\end{itemize}
+
+\pause
+The parameter random walk allow effective exploration for the posterior. Key quantity is the random walk variance $\epsilon$ \\
+
+\pause
+\medskip
+\color{red} DEMO: M-H RANDOM WALK SAMPLER
+}
+
+
+\frame
+{ \frametitle{Some Practical issues MCMC}
+
+\pause
+{\bf Choice of Proposal}: the proposal sets how efficiently and effectively the chains are able to sample from the target posterior. 
+
+
+\pause
+\bigskip
+Key Performance Diagnostics:
+\begin{itemize}
+\pause
+\item
+{\bf Burn-in}: The chain is not sampling from the posterior until the effect of the initial conditions is forgotten. {\it Discard first part of sample}
+\pause
+\item
+{\bf Convergence}: The chain must be in a statistical steady state to be sampling from the posterior {\it Assess stationarity, stability of the statistical moments}
+\pause
+\item
+{\bf Mixing}: the chain must effectively and fully explore the region of parameter space where the posterior density in non-negligible. {\it Time series properties of chain such as autocorrelation}.
+
+\end{itemize}
+
+}
+
+
+
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+
+\end{document}
+
