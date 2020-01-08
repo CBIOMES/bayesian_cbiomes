@@ -19,5 +19,6 @@ In preparation for the meeting and if Stan is not yet installed on your system f
 
  * Introduction to using Git 
  
-   [ in MITgcm manual](https://mitgcm.readthedocs.io/en/latest/contributing/contributing.html#detailed-guide-for-those-less-familiar-with-git-and-github)
+   [MITgcm manual Git intro section](https://mitgcm.readthedocs.io/en/latest/contributing/contributing.html#detailed-guide-for-those-less-familiar-with-git-and-github)
+   [Github guides collection](https://guides.github.com)
 
