@@ -96,30 +96,39 @@ This should return you a table of estimated coefficients.
 
 ## Julia
 
-Stan.jl uses `cmdstan` which will need to install first.
-To do so, clone the following repo from the folder where you would like to install the program
+`Stan.jl` uses `cmdstan` which will need to install first.
+
+To do so, open a terminal window, go to the folder where you would like to download `cmdstan`, and clone the `cmdstan` repository as follows.
 
 `git clone https://github.com/stan-dev/cmdstan.git --recursive`
 
-which will download the folder `cmdstan` into whichever folder you currently are.
-Now navigate into the that folder with
+This will download the folder `cmdstan` into whichever folder you currently are.
+Now enter that folder and compile `cmdstan`.
 
-`cd cmdstan`
+```
+cd cmdstan
+make build
+```
 
-and issue 
+This can take 5 or 10 minutes. 
 
-`make build`
+Before starting `julia`, store the path to `cmdstan` in suitable environment variables. 
 
-which will install `cmdstan`. 
-This can take 5 or 10 minutes.
+```
+export JULIA_CMDSTAN_HOME=$PWD
+export CMDSTAN_HOME=$PWD
+```
 
-After that installation is finished you can install `Stan.jl`.
-To do so, open the Julia prompt and issue
+Once this is done, start `julia` and add `Stan.jl` + `StanSample.jl`.
 
-`Pkg.add("StanSample")`
+```
+using Pkg
+Pkg.add("Stan")
+Pkg.add("StanSample")
+```
 
-We will try to fit a simple linear regression to see if Stan is installed correctly. 
-Open Julia and issue:
+To see if Stan is installed correctly, try to fit a simple linear regression.
+
 ````
 using StanSample
 
@@ -143,5 +152,6 @@ mod_compile = SampleModel("mod", mod, method=StanSample.Sample(save_warmup=true,
 stan_sample(mod_compile, data=data);
 println(read_summary(mod_compile));
 ````
+
 This should return you a table of estimated coefficients. 
 
