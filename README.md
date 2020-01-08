@@ -17,7 +17,7 @@ In preparation for the meeting and if Stan is not yet installed on your system f
  jupyter nbconvert --to script notebook_name.ipynb
  ```
 
- * Introduction to using Git 
+ * Some introductions to using Git 
  
    [MITgcm manual Git intro section](https://mitgcm.readthedocs.io/en/latest/contributing/contributing.html#detailed-guide-for-those-less-familiar-with-git-and-github)
    
