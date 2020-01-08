@@ -23,6 +23,9 @@ In preparation for the meeting and if Stan is not yet installed on your system f
    
    [Github guides collection](https://guides.github.com)
    
+   
+## For fun
+   
  * Some timely videos added on [3blue1brown](https://www.3blue1brown.com) last week
  
    [Intro to Bayes](https://www.youtube.com/watch?v=HZGCoVF3YvM)
