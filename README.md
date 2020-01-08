@@ -28,7 +28,7 @@ In preparation for the meeting and if Stan is not yet installed on your system f
    
  * Some timely videos added on [3blue1brown](https://www.3blue1brown.com) recently!
  
-   [Intro to Bayes], (https://www.youtube.com/watch?v=HZGCoVF3YvM) includes references to the [SS Central America](https://en.wikipedia.org/wiki/SS_Central_America) and other Bayes legends.
+   [Intro to Bayes](https://www.youtube.com/watch?v=HZGCoVF3YvM), includes references to the [SS Central America](https://en.wikipedia.org/wiki/SS_Central_America) and other Bayes legends.
    
    [Testing Bayes](https://www.youtube.com/watch?v=U_85TaXbeIo)
 
