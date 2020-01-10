@@ -47,13 +47,13 @@ In preparation for the meeting and if Stan is not yet installed on your system f
           $  git checkout master
         ```
         
-      1. Now fetch the changes from the upstream repo and merge
+      2. Now fetch the changes from the upstream repo and merge
         ```
           $ git fetch upstream master
           $ git merge upstream/master
         ```
         
-      1. Finally push changes back to your github.com organization
+      3. Finally push changes back to your github.com organization
         ```
           $ git push
         ```
@@ -61,7 +61,8 @@ In preparation for the meeting and if Stan is not yet installed on your system f
    1. Awesome, you should now be done! It is possible that the ```git merge upstream/master``` step
       will report a merge conflict error. This happens when the git algorithms can't figure out how
       to merge some changes you have made yourself in the master branch. One practice to manage this
-      is to make your own changes on a _feature branch_
+      is to make your own changes on a _feature branch_. The _feature branch_ workflow is described 
+      [here](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow).
    
 ## For fun
    
