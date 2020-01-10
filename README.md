@@ -40,11 +40,22 @@ In preparation for the meeting and if Stan is not yet installed on your system f
       
    1. Now you are set to bring the local copy up to date. 
    
-      1. Checkout the master branch in you local copy of the fork
+      1. Make sure you are in the relevant directory and have the master branched checked out
    
         ``` 
           $  cd ~/projects/gits/github.com/YOUR-GITHUB-ORG-NAME/bayesian_cbiomes
           $  git checkout master
+        ```
+        
+      1. Now fetch the changes from the upstream repo and merge
+        ```
+          $ fetch upstream master
+          $ git merge upstream/master
+        ```
+        
+      1. Finally push changes back to your github.com organization
+        ```
+          $ git push
         ```
    
 ## For fun
