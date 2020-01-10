@@ -37,7 +37,15 @@ In preparation for the meeting and if Stan is not yet installed on your system f
         $  cd ~/projects/gits/github.com/YOUR-GITHUB-ORG-NAME/bayesian_cbiomes
         $  git remote add upstream https://github.com/jpmattern/bayesian_cbiomes
       ```
+      
+   1. Now you are set to bring the local copy up to date. 
    
+      1. Checkout the master branch in you local copy of the fork
+   
+        ``` 
+          $  cd ~/projects/gits/github.com/YOUR-GITHUB-ORG-NAME/bayesian_cbiomes
+          $  git checkout master
+        ```
    
 ## For fun
    
