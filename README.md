@@ -23,6 +23,21 @@ In preparation for the meeting and if Stan is not yet installed on your system f
    
    [Github guides collection](https://guides.github.com)
    
+ * Steps to bring your github master branch uo to date with main repo
+ 
+   1. If you have not done so already, download your fork to some directory (e.g. ```~/projects/gits/github.com/YOUR-GITHUB-ORG-NAME/bayesian_cbiomes```) using command such as
+   
+      ``` 
+        $ git clone https://github.com/YOUR-GITHUB-ORG-NAME/bayesian_cbiomes.git 
+      ```
+      
+   1. If you have not done so already, set the _upstream_ repo for your download of the fork
+   
+      ``` 
+        $  cd ~/projects/gits/github.com/YOUR-GITHUB-ORG-NAME/bayesian_cbiomes
+        $  git remote add upstream https://github.com/jpmattern/bayesian_cbiomes
+      ```
+   
    
 ## For fun
    
