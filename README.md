@@ -49,7 +49,7 @@ In preparation for the meeting and if Stan is not yet installed on your system f
         
       1. Now fetch the changes from the upstream repo and merge
         ```
-          $ fetch upstream master
+          $ git fetch upstream master
           $ git merge upstream/master
         ```
         
@@ -57,6 +57,11 @@ In preparation for the meeting and if Stan is not yet installed on your system f
         ```
           $ git push
         ```
+        
+      1. Awesome, you should now be done! It is possible that the ```git merge upstream/master``` step
+         will report a merge conflict error. This happens when the git algorithms can't figure out how
+         to merge some changes you have made yourself in the master branch. One practice to manage this
+         is to make your own changes on a _feature branch_
    
 ## For fun
    
