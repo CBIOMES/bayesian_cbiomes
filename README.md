@@ -23,7 +23,7 @@ In preparation for the meeting and if Stan is not yet installed on your system f
    
    [Github guides collection](https://guides.github.com)
    
- * Steps to bring your github master branch up to date with main repo
+ * Steps to bring your github fork master branch up to date with main repo
  
    1. If you have not done so already, download your fork to some directory (e.g. ```~/projects/gits/github.com/YOUR-GITHUB-ORG-NAME/bayesian_cbiomes```) using command such as
    
