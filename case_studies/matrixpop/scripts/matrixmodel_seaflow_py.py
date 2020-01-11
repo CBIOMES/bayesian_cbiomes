@@ -325,7 +325,7 @@ prop = np.mean(np.abs(diff),axis=0)
 ax.plot(data['t_obs'], prop, label='mean(abs(diff)), avg: {:.6f}'.format(np.mean(prop)))
 prop = np.sum(diff**2,axis=0)
 ax.plot(data['t_obs'], prop, label='sum(diff$^2$), avg: {:.6f}'.format(np.mean(prop)))
-ax.set(xlabel='time (days)', ylabel='model-observation misfit')
+ax.set(xlabel='time (minutes)', ylabel='model-observation misfit')
 ax.legend()
 
 for ax in axs.flat:

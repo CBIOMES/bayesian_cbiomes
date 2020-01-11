@@ -244,7 +244,7 @@ prop = mean(abs.(diff),dims=1)[1,:]
 axs[5].plot(data["t_obs"], prop, label="mean(abs(diff))")
 prop = sum(diff.^2,dims=1)[1,:]
 axs[5].plot(data["t_obs"], prop, label=L"sum(diff^2)")
-axs[5].set(xlabel="time (days)", ylabel="model-observation misfit")
+axs[5].set(xlabel="time (minutes)", ylabel="model-observation misfit")
 axs[5].legend();
 
 slice_indices = [1,3,16].+1
